@@ -1,12 +1,15 @@
 import React from 'react';
 
 interface Props {
+  contractAddress: string|null;
   userAddress: string|null;
   totalSupply: number;
   maxSupply: number;
   isPaused: boolean;
   isWhitelistMintEnabled: boolean;
   isUserInWhitelist: boolean;
+  etherscanContractUrl: string;
+  etherscanWalletUrl: string;
 }
 
 interface State {
@@ -32,8 +35,25 @@ export default class CollectionStatus extends React.Component<Props, State> {
       <>
         <div className="collection-status">
           <div className="user-address">
-            <span className="label">Wallet address:</span>
-            <span className="address">{this.props.userAddress}</span>
+            <span className="">Wallet address:</span>
+            <span className="address">
+              <a 
+                href= {this.props.etherscanWalletUrl}
+                target="_blank" 
+              >
+                {this.props.userAddress}
+              </a>
+            </span>
+            <br />
+            <span className="">Contract address:</span>
+            <span className="address">
+              <a 
+                href= {this.props.etherscanContractUrl}
+                target="_blank" 
+              >
+                {this.props.contractAddress}
+              </a>
+            </span>
           </div>
           
           <div className="supply">
