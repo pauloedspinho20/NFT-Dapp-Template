@@ -4,16 +4,17 @@ import { ExternalProvider, Web3Provider } from '@ethersproject/providers';
 import detectEthereumProvider from '@metamask/detect-provider';
 import NftContractType from '../lib/NftContractType';
 import CollectionConfig from '../../../../smart-contract/config/CollectionConfig';
-import CollectionStatus from './CollectionStatus';
-import MintWidget from './MintWidget';
+import CollectionStatus from './components/Collection/Status/CollectionStatus';
+import MintWidget from './components/MintWidget/MintWidget';
 import Whitelist from '../lib/Whitelist';
 
-const ContractAbi = require('../../../../smart-contract/artifacts/contracts/' + CollectionConfig.contractName + '.sol/' + CollectionConfig.contractName + '.json').abi;
+const ContractAbi = require('../abis/' + CollectionConfig.contractName + '.sol/' + CollectionConfig.contractName + '.json').abi;
 
 interface Props {
 }
 
 interface State {
+  contractAddress: string|null;
   userAddress: string|null;
   network: ethers.providers.Network|null,
   totalSupply: number;
@@ -25,11 +26,13 @@ interface State {
   isUserInWhitelist: boolean;
   merkleProofManualAddress: string;
   merkleProofManualAddressFeedbackMessage: string|JSX.Element|null;
-  etherscanUrl: string,
+  etherscanContractUrl: string,
+  etherscanWalletUrl: string,
   errorMessage: string|JSX.Element|null,
 }
 
 const defaultState: State = {
+  contractAddress: CollectionConfig.contractAddress,
   userAddress: null,
   network: null,
   totalSupply: 0,
@@ -41,7 +44,8 @@ const defaultState: State = {
   isUserInWhitelist: false,
   merkleProofManualAddress: '',
   merkleProofManualAddressFeedbackMessage: null,
-  etherscanUrl: '',
+  etherscanContractUrl: '',
+  etherscanWalletUrl: '',
   errorMessage: null,
 };
 
@@ -60,7 +64,7 @@ export default class Dapp extends React.Component<Props, State> {
 
   componentDidMount = async () => {
     // Update the default state with a generic URL before we know the actual network through the connected wallet
-    defaultState.etherscanUrl = this.generateEtherscanUrl();
+    defaultState.etherscanContractUrl = this.generateEtherscanContractUrl();
 
     const browserProvider = await detectEthereumProvider() as ExternalProvider;
 
@@ -70,7 +74,7 @@ export default class Dapp extends React.Component<Props, State> {
         <>
           We were not able to detect <strong>MetaMask</strong>. We value <strong>privacy and security</strong> a lot so we limit the wallet options on the DAPP.<br />
           <br />
-          But don't worry! <span className="emoji">😃</span> You can always interact with the smart-contract through <a href={defaultState.etherscanUrl} target="_blank">Etherscan</a> and <strong>we do our best to provide you with the best user experience possible</strong>, even from there.<br />
+          But don't worry! <span className="emoji">😃</span> You can always interact with the smart-contract through <a href={defaultState.etherscanContractUrl} target="_blank">Etherscan</a> and <strong>we do our best to provide you with the best user experience possible</strong>, even from there.<br />
           <br />
           You can also get your <strong>Whitelist Proof</strong> manually, using the tool below.
         </>,
@@ -122,6 +126,9 @@ export default class Dapp extends React.Component<Props, State> {
     return this.state.network !== null && this.state.network.chainId !== 1;
   }
 
+  /* 
+  * COPY MERKLE PROOF TO CLIPBOARD
+  */
   private copyMerkleProofToClipboard(): void
   {
     const merkleProof = Whitelist.getRawProofForAddress(this.state.userAddress ?? this.state.merkleProofManualAddress);
@@ -140,7 +147,7 @@ export default class Dapp extends React.Component<Props, State> {
       merkleProofManualAddressFeedbackMessage: 
       <>
         <strong>Congratulations!</strong> <span className="emoji">🎉</span><br />
-        Your Merkle Proof <strong>has been copied to the clipboard</strong>. You can paste it into <a href={this.state.etherscanUrl} target="_blank">Etherscan</a> to claim your tokens.
+        Your Merkle Proof <strong>has been copied to the clipboard</strong>. You can paste it into <a href={this.state.etherscanContractUrl} target="_blank">Etherscan</a> to claim your tokens.
       </>,
     });
   }
@@ -162,13 +169,17 @@ export default class Dapp extends React.Component<Props, State> {
             {this.isContractReady() ?
               <>
                 <CollectionStatus
+                  contractAddress={this.state.contractAddress}
                   userAddress={this.state.userAddress}
                   maxSupply={this.state.maxSupply}
                   totalSupply={this.state.totalSupply}
                   isPaused={this.state.isPaused}
                   isWhitelistMintEnabled={this.state.isWhitelistMintEnabled}
                   isUserInWhitelist={this.state.isUserInWhitelist}
+                  etherscanContractUrl={this.state.etherscanContractUrl}
+                  etherscanWalletUrl={this.state.etherscanWalletUrl}
                 />
+
                 {this.state.totalSupply < this.state.maxSupply ?
                   <MintWidget
                     maxSupply={this.state.maxSupply}
@@ -183,9 +194,9 @@ export default class Dapp extends React.Component<Props, State> {
                   />
                   :
                   <div className="collection-sold-out">
-                    <h2>Tokens have been <strong>sold out</strong>! <span className="emoji">🥳</span></h2>
+                    <h2>All NFTs have been minted.</h2>
 
-                    You can buy from our beloved holders on <a href={this.generateOpenSeaUrl()} target="_blank">OpenSea</a>.
+                    You can buy them on <a href={this.generateOpenSeaUrl()} target="_blank">OpenSea</a>.
                   </div>
                 }
               </>
@@ -205,33 +216,15 @@ export default class Dapp extends React.Component<Props, State> {
         {!this.isWalletConnected() || !this.isSoldOut() ?
           <div className="no-wallet">
             {!this.isWalletConnected() ? <button className="primary" disabled={this.provider === undefined} onClick={() => this.connectWallet()}>Connect Wallet</button> : null}
-            
-            <div className="use-etherscan">
-              Hey, looking for a <strong>super-safe experience</strong>? <span className="emoji">😃</span><br />
-              You can interact with the smart-contract <strong>directly</strong> through <a href={this.state.etherscanUrl} target="_blank">Etherscan</a>, without even connecting your wallet to this DAPP! <span className="emoji">🚀</span><br />
-              <br />
-              Keep safe! <span className="emoji">❤️</span>
-            </div>
-
-            {!this.isWalletConnected() || this.state.isWhitelistMintEnabled ?
-              <div className="merkle-proof-manual-address">
-                <h2>Whitelist Proof</h2>
-                <p>
-                  Anyone can generate the proof using any public address in the list, but <strong>only the owner of that address</strong> will be able to make a successful transaction by using it.
-                </p>
-
-                {this.state.merkleProofManualAddressFeedbackMessage ? <div className="feedback-message">{this.state.merkleProofManualAddressFeedbackMessage}</div> : null}
-
-                <label htmlFor="merkle-proof-manual-address">Public address:</label>
-                <input id="merkle-proof-manual-address" type="text" placeholder="0x000..." disabled={this.state.userAddress !== null} value={this.state.userAddress ?? this.state.merkleProofManualAddress} ref={(input) => this.merkleProofManualAddressInput = input!} onChange={() => {this.setState({merkleProofManualAddress: this.merkleProofManualAddressInput.value})}} /> <button onClick={() => this.copyMerkleProofToClipboard()}>Generate and copy to clipboard</button>
-              </div>
-              : null}
           </div>
           : null}
       </>
     );
   }
 
+  /* 
+  * SET ERROR
+  */
   private setError(error: any = null): void
   {
     let errorMessage = 'Unknown error...';
@@ -254,11 +247,25 @@ export default class Dapp extends React.Component<Props, State> {
     });
   }
 
-  private generateEtherscanUrl(): string
+  /* 
+  * GENERATE ETHERSCAN CONTRACT URL
+  */
+  private generateEtherscanContractUrl(): string
   {
-    return `https://${this.state.network?.chainId === 1 || !this.state.network?.name ? 'www' : this.state.network.name}.etherscan.io/address/${CollectionConfig.contractAddress}`;
+    return `https://${this.state.network?.chainId === 1 || !this.state.network?.name ? 'www' : this.state.network.name}.etherscan.io/address/${CollectionConfig.contractAddress}#code`;
   }
 
+    /* 
+  * GENERATE ETHERSCAN WALLET URL
+  */
+    private generateEtherscanWalletUrl(): string
+    {
+      return `https://${this.state.network?.chainId === 1 || !this.state.network?.name ? 'www' : this.state.network.name}.etherscan.io/address/${this.state.userAddress}`;
+    }
+
+  /* 
+  * GENERATE OPENSEA URL
+  */
   private generateOpenSeaUrl(): string
   {
     const subdomain = this.state.network?.chainId === 1 ? 'www' : 'testnets';
@@ -266,6 +273,9 @@ export default class Dapp extends React.Component<Props, State> {
     return `https://${subdomain}.opensea.io/` + (CollectionConfig.openSeaSlug ? 'collection/' + CollectionConfig.openSeaSlug : null);
   }
 
+  /* 
+  * CONNECT WALLET 
+  */
   private async connectWallet(): Promise<void>
   {
     try {
@@ -277,6 +287,9 @@ export default class Dapp extends React.Component<Props, State> {
     }
   }
 
+  /* 
+  * INIT WALLET 
+  */
   private async initWallet(): Promise<void>
   {
     const walletAccounts = await this.provider.listAccounts();
@@ -314,7 +327,8 @@ export default class Dapp extends React.Component<Props, State> {
       isPaused: await this.contract.paused(),
       isWhitelistMintEnabled: await this.contract.whitelistMintEnabled(),
       isUserInWhitelist: Whitelist.contains(this.state.userAddress ?? ''),
-      etherscanUrl: this.generateEtherscanUrl(),
+      etherscanContractUrl: this.generateEtherscanContractUrl(),
+      etherscanWalletUrl: this.generateEtherscanWalletUrl(),
     });
   }
 
