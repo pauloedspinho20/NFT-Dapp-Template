@@ -1,0 +1,65 @@
+$bp-wide: 1400px;
+$bp-semiwide: 1300px;
+$bp-desktop: 1200px;
+$bp-landscape: 992px;
+$bp-portrait: 768px;
+$bp-mobile: 576px;
+
+$bp-until-wide: #{$bp-wide - 1px};
+$bp-until-semiwide: #{$bp-semiwide - 1px};
+$bp-until-desktop: #{$bp-desktop - 1px};
+$bp-until-landscape: #{$bp-landscape - 1px};
+$bp-until-portrait: #{$bp-portrait - 1px};
+$bp-until-mobile: #{$bp-mobile - 1px};
+
+@mixin breakpoint ($device) {
+  @if $device == wide {
+    @media (min-width: $bp-wide) {
+      @content;
+    }
+  } @else if $device == until-wide {
+    @media (max-width: $bp-until-wide) {
+      @content;
+    }
+  } @else if $device == semiwide {
+    @media (min-width: $bp-semiwide) {
+      @content;
+    }
+  } @else if $device == until-semiwide {
+    @media (max-width: $bp-until-semiwide) {
+      @content;
+    }
+  } @else if $device == desktop {
+    @media (min-width: $bp-desktop) {
+      @content;
+    }
+  } @else if $device == until-desktop {
+    @media (max-width: $bp-until-desktop) {
+      @content;
+    }
+  } @else if $device == landscape {
+    @media (min-width: $bp-landscape) {
+      @content;
+    }
+  } @else if $device == until-landscape {
+    @media (max-width: $bp-until-landscape) {
+      @content;
+    }
+  } @else if $device == portrait {
+    @media (min-width: $bp-portrait) {
+      @content;
+    }
+  } @else if $device == until-portrait {
+    @media (max-width: $bp-until-portrait) {
+      @content;
+    }
+  } @else if $device == mobile {
+    @media (min-width: $bp-mobile) {
+      @content;
+    }
+  } @else if $device == until-mobile {
+    @media (max-width: $bp-until-mobile) {
+      @content;
+    }
+  }
+}
