@@ -1,0 +1,17 @@
+@import 'scss/init';
+
+.container {
+  width: 100%;
+  padding-right: 30px;
+  padding-left: 30px;
+  margin-right: auto;
+  margin-left: auto;
+
+  @include breakpoint(mobile) { max-width: 540px; }
+
+  @include breakpoint(portrait) { max-width: 720px; }
+
+  @include breakpoint(landscape) { max-width: 960px; }
+
+  @include breakpoint(desktop) { max-width: 1300px; }
+}

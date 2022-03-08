@@ -1,0 +1,14 @@
+@import 'scss/init';
+
+.page-main-description {
+  width: 100%;
+  display: block;
+  font-weight: 500;
+  text-transform: uppercase;
+  text-align: center;
+  background: $gradient_yellow;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 70px;
+  position: relative;
+}

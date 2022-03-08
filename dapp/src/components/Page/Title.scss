@@ -1,0 +1,32 @@
+@import 'scss/init';
+
+.page-main-title {
+  width: 100%;
+  display: block;
+  text-transform: uppercase;
+  text-align: center;
+  background: $orange;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 30px;
+  position: relative;
+
+  @include breakpoint(until-portrait) {
+    font-size: 1.5rem;
+    line-height: 1.2em;
+  }
+
+  small {
+    width: 100%;
+    height: auto;
+    display: block;
+    text-align: center;
+    position: absolute;
+    bottom: -30px;
+    font-size: 0.65rem;
+    color: rgba($white, 0.75);
+    letter-spacing: 0.2em;
+    -webkit-text-fill-color: rgba($white, 0.75);
+    background-clip: unset;
+  }
+}

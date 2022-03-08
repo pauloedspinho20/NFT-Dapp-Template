@@ -1,0 +1,46 @@
+// Create color palettes at this cool site: https://coolors.co/
+
+$white: #fff;
+$grey: #e8eef2; // Alice Blue;
+$black: #37393a; // Onyx
+$blue: #274060; // Indigo Dye
+$yellow: #ffbf46; // Maximum Yellow Red
+$orange: #ff6542; // Portland Orange
+
+$color-text: #fff;
+
+.black {
+  color: $black;
+}
+
+.bg-black {
+  background: $black;
+}
+
+.blue {
+  color: $blue;
+}
+
+.bg-blue {
+  background: $blue;
+}
+
+.yellow {
+  color: $yellow;
+}
+
+.bg-yellow {
+  background: $yellow;
+}
+
+.orange {
+  color: $orange;
+}
+
+.bg-orange {
+  background: $orange;
+}
+
+$gradient_white: linear-gradient(178.9deg, $white 31.24%, $yellow 182.59%);
+$gradient_yellow: linear-gradient(141.32deg, $yellow 4.58%, $yellow 122.96%);
+$gradient_blue: linear-gradient(119.91deg, $yellow -18.1%, $blue 82.06%);

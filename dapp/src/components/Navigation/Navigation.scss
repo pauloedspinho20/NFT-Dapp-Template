@@ -1,0 +1,400 @@
+@import 'scss/init';
+
+header#main-header {
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 60px;
+  z-index: 100;
+  transition: $white;
+  will-change: transform;
+  transform: translate3d(0, 0, 0) !important;
+
+  @include breakpoint(until-landscape) {
+    position: fixed;
+    top: 0 !important;
+    background: rgba($black, 0.95);
+    box-shadow: 0 2px 9px 0 rgba($black, 0.08);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba($white, 0.2);
+  }
+
+  body.header-is-sticky & {
+    position: fixed;
+    top: 0 !important;
+  }
+
+  .main-logo {
+    position: relative;
+    // width: 300px;
+    height: auto;
+    display: block;
+    float: left;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+    /*  @include breakpoint(until-desktop) {
+      width: 220px;
+    } */
+
+    @include breakpoint(until-landscape) {
+      margin-bottom: -10px;
+      // width: 180px;
+    }
+
+    a {
+      width: 100%;
+      height: auto;
+      display: block;
+      &:hover { opacity: 0.6; }
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+
+      @include breakpoint(landscape) {
+        margin-bottom: -10px;
+      }
+    }
+
+    .logo-img-dark {
+      display: none;
+    }
+  }
+
+  #main-nav {
+    @include clearfix();
+
+    display: block;
+    float: right;
+    position: relative;
+    top: 5px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+    @include breakpoint(until-desktop) {
+      top: 0;
+    }
+
+    @include breakpoint(until-landscape) {
+      display: none;
+    }
+
+    ul {
+      @include clearfix();
+    }
+
+    a.nav-item,
+    span.nav-item {
+      font-size: 1em;
+      line-height: 1em;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: $black;
+      position: relative;
+      transition: all 0.2s;
+      cursor: pointer;
+
+      &:hover { color: $orange; }
+    }
+
+    .nav-item-li {
+      display: block;
+      float: left;
+      position: relative;
+
+      ul {
+        width: 230px;
+        position: absolute;
+        top: 100%;
+        left: -20px;
+        background: rgba($black, 0.75);
+        border: 1px solid rgba($white, 0.4);
+        box-sizing: border-box;
+        padding: 0;
+        margin-top: 0;
+
+        li {
+          position: relative;
+          display: block;
+          float: none;
+          margin: 0 !important;
+
+          a {
+            display: block;
+            font-size: 0.8125rem;
+            line-height: 1em;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            color: $white;
+            padding-left: 20px;
+            transition: all 0.15s;
+            &:hover { color: $orange; }
+          }
+
+          &:first-child {
+            a { padding-top: 25px; }
+          }
+
+          &:not(:last-child) a { padding-bottom: 10px; }
+
+          &:last-child a { padding-bottom: 20px; }
+        }
+      }
+
+      &:not(:last-child) {
+        margin-right: 25px;
+
+        @include breakpoint(until-desktop) {
+          margin-right: 15px;
+        }
+      }
+
+      > a.nav-item {
+        top: 7px;
+      }
+    }
+
+    a.nav-item--current_page {
+      color: $orange;
+      position: relative;
+      cursor: default;
+
+      &::before {
+        content: '';
+        width: 100%;
+        height: 2px;
+        background: $orange;
+        display: block;
+        position: absolute;
+        bottom: -7px;
+        left: 0;
+        box-shadow: 3px 7px 15px rgba(13, 21, 62, 0.4), 3px 7px 15px rgba(13, 21, 62, 0.4);
+      }
+    }
+
+    .nav-item-has-submenu {
+      a.nav-item {
+        padding-bottom: 20px;
+      }
+    }
+
+    .nav-item-submenu-hovered {
+      a.nav-item {
+        color: $orange;
+      }
+    }
+
+    .btn-connect-wallet {
+      position: relative;
+      top: -5px;
+      transition: all 0.25s;
+    }
+  }
+
+  .mobile-menu-btn {
+    display: none;
+
+    @include breakpoint(until-landscape) {
+      position: absolute;
+      top: 6px;
+      right: 15px;
+      width: 25px;
+      height: 16px;
+      display: block;
+      transition: all 0.25s;
+      border: 0;
+      background: none;
+      padding: 0;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      &::before,
+      &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background-color: $white;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      &::before {
+        top: 0;
+      }
+
+      &::after {
+        bottom: 0;
+      }
+
+      .line {
+        display: block;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 2px;
+        width: 100%;
+        background-color: $white;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      body.mobile-nav-is-active & {
+        transition: all 0.25s;
+
+        &::before {
+          width: 100%;
+          background-color: $white;
+          transform: translateY(-50%) translateX(-10%) rotate(45deg);
+          top: 50%;
+        }
+
+        &::after {
+          width: 100%;
+          background-color: $white;
+          transform: translateY(50%) translateX(-10%) rotate(-45deg);
+          bottom: 50%;
+        }
+
+        .line {
+          opacity: 0;
+        }
+      }
+    }
+  }
+}
+
+#mobile-nav {
+  display: none;
+
+  @include breakpoint(until-landscape) {
+    width: 100%;
+    position: fixed;
+    top: 50px;
+    left: 0;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: rgba($black, 0.95);
+    box-shadow: 0 2px 9px 0 rgba($black, 0.08);
+    border-bottom: 1px solid rgba($white, 0.2);
+    transform: translateY(-120%);
+    transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+    display: block !important;
+    z-index: 90;
+
+    li {
+      margin-bottom: 5px;
+    }
+
+    a.nav-item,
+    .nav-item-submenu li a {
+      font-size: 1.1rem;
+      line-height: 1em;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: $white;
+      transition: all 0.2s;
+      padding: 3px 0;
+      display: inline-block;
+
+      &:hover { color: $orange; }
+    }
+
+    // stylelint-disable-next-line csstools/use-nesting
+    .nav-item-submenu li {
+      margin-left: 10px;
+      margin-bottom: 0;
+
+      // stylelint-disable-next-line no-descending-specificity
+      a {
+        font-size: 0.87em;
+        color: rgba($white, 0.8);
+        padding: 2px 0;
+      }
+    }
+
+    a.nav-item--current_page {
+      color: $orange;
+      position: relative;
+      cursor: default;
+
+      &::before {
+        content: '';
+        width: 100%;
+        height: 2px;
+        background: $gradient_yellow;
+        display: block;
+        position: absolute;
+        bottom: 1px;
+        left: 0;
+        box-shadow: 3px 7px 15px rgba(13, 21, 62, 0.4), 3px 7px 15px rgba(13, 21, 62, 0.4);
+      }
+    }
+
+    .btn-connect-wallet {
+      margin-top: 10px;
+    }
+
+    .social-media-nav {
+      margin-top: 20px;
+    }
+
+    .tokens-league-btn {
+      display: block;
+      margin-top: 25px;
+      margin-bottom: 0;
+    }
+
+    .btn-fantasy {
+      margin-top: 10px;
+    }
+
+    body.mobile-nav-is-active & {
+      transform: translateY(0);
+    }
+  }
+}
+
+@include breakpoint(landscape) {
+  body.header-is-sticky {
+    header#main-header {
+      position: fixed;
+      top: 0 !important;
+      z-index: 100;
+      background: $white;
+      box-shadow: 0 2px 9px 0 rgba($black, 0.08);
+      padding-top: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba($white, 0.2);
+
+      .main-logo {
+        // width: 200px;
+
+        .beta-badge {
+          transform: scale(0.6);
+          margin-left: 10px;
+          top: 6px;
+        }
+      }
+
+      #main-nav {
+        top: 0;
+
+        a.nav-item--current_page { color: $orange; }
+        .nav-item-submenu-hovered a.nav-item { color: $orange; }
+
+        .btn-connect-wallet {
+          position: relative;
+          top: 0;
+          padding: 12px 15px 10px;
+          font-size: 0.6875rem;
+        }
+      }
+    }
+  }
+}
